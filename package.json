@@ -1,0 +1,15 @@
+{
+  "name": "gka-utils",
+  "version": "0.0.0",
+  "description": "gka utils",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gka",
+    "utils"
+  ],
+  "author": "joeyguo",
+  "license": "MIT"
+}
