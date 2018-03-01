@@ -35,12 +35,12 @@ function getKeyframesCSS(data, opts, obj) {
 		frameduration = opts.frameduration;
 
 	var frames = data.frames,
-        keyMap = data.keyMap,
+        animations = data.animations,
         keyframes = [],
         _frames = [];
 
-    for (var key in keyMap) {
-        _frames = keyMap[key].map(key => {
+    for (var key in animations) {
+        _frames = animations[key].map(key => {
             return frames[key]
         });
         keyframes.push(getKeyFrames(key, _frames, data, getConfig));
@@ -58,6 +58,7 @@ function getKeyframesCSS(data, opts, obj) {
     var k = injectAnimationCSS && injectAnimationCSS(firstFrame) || {};
     var frameStr = getInjectAnimationCSS(k)
 
+    // background-size: contain;
     var css = `.${prefix}animation {${frameStr}
     background-image: url("${'./img/' + (data.file || firstFrame.file)}");
     background-repeat: no-repeat;

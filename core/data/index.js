@@ -11,71 +11,38 @@ function isArray(o) {
 /**
  * data 为传入数据
  * delKeys {array} 制定frame中哪些字段去除
- * withKeyMap {boolean} 是否保留 KeyMap，默认false
+ * withAnimations {boolean} 是否保留 animations，默认false
  */
-function formateData(data, delKeys, withKeyMap) {
+function formateData(data, delKeys, withAnimations) {
     var frames = data.frames,
         frame = frames[0];
 
     var sKeys = [];
     var _data = {};
 
-    if (isArray(frame)) {
-        var frameplain = [];
-
-        for (var i = 0; i < frames.length; i++) {
-            for (var j = 0; j < frames[i].length; j++) {
-                frameplain.push(frames[i][j]);
-            }
+    for (var i = 0, fKeys = Object.keys(frames[0]); i < fKeys.length; i++) {
+        var key = fKeys[i];
+        if(isSame(frames, key) && (delKeys? delKeys.indexOf(key) === -1:  true)) {
+            sKeys.push(key);
+            _data[key] = frames[0][key]
         }
-
-        for (var i = 0, fKeys = Object.keys(frame[0]); i < fKeys.length; i++) {
-            var key = fKeys[i];
-            if(isSame(frameplain, key)) {
-                sKeys.push(key);
-                _data[key] = frame[0][key]
-            }
-        }
-
-        _data['frames'] = frames.map(function(frame){
-            var arr = [];
-            for (var i = 0; i < frame.length; i++) {
-                var f = {};
-                for(var k in frame[i]) {
-                    if(sKeys.indexOf(k) === -1 && (delKeys? delKeys.indexOf(k) === -1:  true)) {
-                        f[k] = frame[i][k];
-                    }
-                }
-                arr.push(f);
-            }
-            
-            return arr;
-        })
-
-    } else {
-        for (var i = 0, fKeys = Object.keys(frame); i < fKeys.length; i++) {
-            var key = fKeys[i];
-            if(isSame(frames, key)) {
-                sKeys.push(key);
-                _data[key] = frames[0][key]
-            }
-        }
-
-        _data['frames'] = frames.map(function(frame){
-            var f = {};
-            for(var k in frame) {
-                if(sKeys.indexOf(k) === -1 && (delKeys? delKeys.indexOf(k) === -1:  true)) {
-                    f[k] = frame[k];
-                }
-            }
-            return f;
-        })
     }
 
-    if (withKeyMap && data['keyMap']) {
-        _data['keyMap'] = {};
-        for(var k in data['keyMap']) {
-            _data['keyMap'][k] = JSON.stringify(data['keyMap'][k])
+    var newFrame = frames.map(function(frame){
+        var f = {};
+        for(var k in frame) {
+            if(sKeys.indexOf(k) === -1 && (delKeys? delKeys.indexOf(k) === -1:  true)) {
+                f[k] = frame[k];
+            }
+        }
+        return f;
+    })
+
+    _data['frames'] = newFrame;
+    if (withAnimations && data['animations']) {
+        _data['animations'] = {};
+        for(var k in data['animations']) {
+            _data['animations'][k] = JSON.stringify(data['animations'][k])
         }
     }
     return _data;
